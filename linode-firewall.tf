@@ -40,7 +40,7 @@ resource "linode_firewall" "srt" {
     action   = "ACCEPT"
     protocol = "UDP"
     ports    = "31234"
-    ipv4     = [ "179.97.191.88/32" ]
+    ipv4     = [ "1.2.3.4/32" ]
   }
 
   # Enable live video playing in the swarm.
@@ -49,7 +49,7 @@ resource "linode_firewall" "srt" {
     action   = "ACCEPT"
     protocol = "UDP"
     ports    = "32000"
-    ipv4     = [ "179.97.191.88/32" ]
+    ipv4     = [ "1.2.3.4/32" ]
   }
 
   # Attach the firewall rules in the swarm nodes.
