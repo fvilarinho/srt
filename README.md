@@ -6,7 +6,7 @@ This is a demo project for education/training purposes of streaming.
 
 It automates (using **Terraform**) the provisioning of the following infrastructure for live streaming in Akamai 
 Connected Cloud (former Linode) using the [**SRT**](https://www.haivision.com/products/srt-secure-reliable-transport/) 
-protocol designed by Hayvision:
+protocol designed by Haivision:
 - **Linodes** (Compute instances): Where the live streaming server will be running.
 - **Firewall**: Protects the live streaming traffic.
 
