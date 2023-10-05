@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  # Live Transmit 1.
+  live-transmit:
+    image: miyukki/srt:latest
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "srt-live-transmit srt://:31234 srt://:32000"
+    ports:
+      - target: 31234
+        published: 31234
+        protocol: udp
+        mode: host
+      - target: 32000
+        published: 32000
+        protocol: udp
+        mode: host
