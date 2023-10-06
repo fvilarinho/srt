@@ -21,8 +21,9 @@ function uploadTheStack() {
       -o "UserKnownHostsFile=/dev/null" \
       -o "StrictHostKeyChecking=no" \
       -i "$PRIVATE_KEY_FILENAME" \
+      .env \
       ./stack.yml \
-      root@"$MANAGER_NODE:/root/stack.yml"
+      root@"$MANAGER_NODE":/root
 }
 
 # Apply the stack in the swarm.
@@ -31,7 +32,7 @@ function applyTheStack() {
       -o "UserKnownHostsFile=/dev/null" \
       -o "StrictHostKeyChecking=no" \
       -i "$PRIVATE_KEY_FILENAME" \
-      root@"$MANAGER_NODE" "docker stack deploy --compose-file stack.yml --prune srt"
+      root@"$MANAGER_NODE" "source .env; docker stack deploy --compose-file stack.yml --prune srt"
 }
 
 # Main function.

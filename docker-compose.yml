@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  # SRT service definition.
+  srt:
+    build: .
+    platform: linux/amd64
+    image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/srt:${BUILD_VERSION}

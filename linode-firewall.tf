@@ -93,12 +93,12 @@ resource "linode_firewall" "default" {
     }
   }
 
-  # Enable live video streaming.
+  # Enable live video transmit.
   dynamic "inbound" {
-    for_each = local.settings.allowedIps
+    for_each = local.settings.transmitAllowedIps
 
     content {
-      label    = "srt-live-streaming"
+      label    = "srt-live-transmit"
       action   = "ACCEPT"
       protocol = "UDP"
       ports    = "31234"
@@ -106,13 +106,17 @@ resource "linode_firewall" "default" {
     }
   }
 
-  # Enable live video play.
-  inbound {
-    label    = "srt-live-play"
-    action   = "ACCEPT"
-    protocol = "UDP"
-    ports    = "32000"
-    ipv4     = [ "0.0.0.0/0" ]
+  # Enable live video receive.
+  dynamic "inbound" {
+    for_each = local.settings.receiveAllowedIps
+
+    content {
+      label    = "srt-live-receive"
+      action   = "ACCEPT"
+      protocol = "UDP"
+      ports    = "32000"
+      ipv4     = [ inbound.value ]
+    }
   }
 }
 

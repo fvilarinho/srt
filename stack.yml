@@ -1,9 +1,8 @@
 version: "3"
 
 services:
-  # Live Transmit 1.
   live-transmit1:
-    image: miyukki/srt:latest
+    image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/srt:${BUILD_VERSION}
     deploy:
       mode: global
       restart_policy:
@@ -11,7 +10,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "srt-live-transmit srt://:31234 srt://:32000"
+      - "srt-live-transmit -a:yes srt://:31234 srt://:32000"
     ports:
       - target: 31234
         published: 31234
