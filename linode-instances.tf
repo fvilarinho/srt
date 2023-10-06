@@ -121,8 +121,8 @@ resource "null_resource" "cleanSwarm" {
     }
 
     inline = [
-      "nodes=$(docker node ls | grep Down | awk {'print $1'})",
-      "if [ -n \"$nodes\" ]; then docker node rm -f $nodes; fi"
+      "NODES=$(docker node ls | grep Down | awk {'print $1'})",
+      "if [ -n \"$NODES\" ]; then docker node rm -f $NODES; fi"
     ]
   }
 
