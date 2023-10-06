@@ -27,7 +27,7 @@ function getSwarmToken() {
               -i "$PRIVATE_KEY_FILENAME" \
               root@"$MANAGER_NODE" "docker swarm join-token worker -q")
 
-  echo "{\"command\": \"docker swarm join --token $TOKEN $MANAGER_NODE:2377\"}"
+  echo "{\"token\": \"$TOKEN\"}"
 }
 
 # Main function.

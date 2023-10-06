@@ -4,6 +4,12 @@ variable "credentialsFilename" {
   default = ".credentials"
 }
 
+# Settings filename variable.
+variable "settingsFilename" {
+  type = string
+  default = "settings.json"
+}
+
 # Private key filename variable.
 variable "privateKeyFilename" {
   type = string

@@ -4,7 +4,7 @@ locals {
 }
 
 # Create the SSH private key.
-resource "tls_private_key" "application" {
+resource "tls_private_key" "default" {
   algorithm = "RSA"
   rsa_bits  = "4096"
 }
@@ -12,7 +12,7 @@ resource "tls_private_key" "application" {
 # Save the SSH private key file.
 resource "local_sensitive_file" "privateKey" {
   filename        = local.privateKeyFilename
-  content         = tls_private_key.application.private_key_openssh
+  content         = tls_private_key.default.private_key_openssh
   file_permission = "600"
-  depends_on      = [ tls_private_key.application ]
+  depends_on      = [ tls_private_key.default ]
 }

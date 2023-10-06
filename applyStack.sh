@@ -31,7 +31,7 @@ function applyTheStack() {
       -o "UserKnownHostsFile=/dev/null" \
       -o "StrictHostKeyChecking=no" \
       -i "$PRIVATE_KEY_FILENAME" \
-      root@"$MANAGER_NODE" "docker stack deploy -c ./stack.yml srt"
+      root@"$MANAGER_NODE" "docker stack deploy --compose-file stack.yml --prune srt"
 }
 
 # Main function.

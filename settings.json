@@ -1,0 +1,27 @@
+{
+  "manager": {
+    "label": "srt-spo",
+    "tag": "srt",
+    "type": "g7-premium-4",
+    "image": "linode/debian11",
+    "region": "br-gru"
+  },
+  "workers": [
+    {
+      "label": "srt-iad",
+      "tag": "srt",
+      "type": "g7-premium-4",
+      "image": "linode/debian11",
+      "region": "us-iad"
+    },
+    {
+      "label": "srt-mia",
+      "tag": "srt",
+      "type": "g7-premium-4",
+      "image": "linode/debian11",
+      "region": "us-mia"
+    }
+  ],
+  "allowedIps": [ "1.2.3.4/32" ],
+  "serviceMesh": true
+}

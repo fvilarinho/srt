@@ -2,11 +2,10 @@ version: "3"
 
 services:
   # Live Transmit 1.
-  live-transmit:
+  live-transmit1:
     image: miyukki/srt:latest
     deploy:
-      mode: replicated
-      replicas: 2
+      mode: global
       restart_policy:
         condition: on-failure
     command:
@@ -17,8 +16,6 @@ services:
       - target: 31234
         published: 31234
         protocol: udp
-        mode: host
       - target: 32000
         published: 32000
         protocol: udp
-        mode: host

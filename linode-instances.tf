@@ -4,15 +4,15 @@ resource "random_password" "default" {
 }
 
 # Create the manager instance of the swarm.
-resource "linode_instance" "spo" {
-  label           = "srt-spo"
-  tags            = [ "srt" ]
-  type            = "g7-premium-4"
-  image           = "linode/debian11"
-  region          = "br-gru"
+resource "linode_instance" "manager" {
+  label           = local.settings.manager.label
+  tags            = [ local.settings.manager.tag ]
+  type            = local.settings.manager.type
+  image           = local.settings.manager.image
+  region          = local.settings.manager.region
   private_ip      = true
   root_pass       = random_password.default.result
-  authorized_keys = [ chomp(tls_private_key.application.public_key_openssh) ]
+  authorized_keys = [ chomp(tls_private_key.default.public_key_openssh) ]
 
   provisioner "remote-exec" {
     # Remote connection attributes.
@@ -20,12 +20,12 @@ resource "linode_instance" "spo" {
       host        = self.ip_address
       user        = "root"
       password    = random_password.default.result
-      private_key = chomp(tls_private_key.application.private_key_openssh)
+      private_key = chomp(tls_private_key.default.private_key_openssh)
     }
 
     # Install the required software and initialize the swarm.
     inline = [
-      "hostnamectl set-hostname srt-spo",
+      "hostnamectl set-hostname ${self.label}",
       "apt update",
       "apt -y upgrade",
       "apt -y install bash ca-certificates curl wget htop dnsutils net-tools vim",
@@ -40,20 +40,26 @@ resource "linode_instance" "spo" {
 }
 
 # Get the swarm token.
-data "external" getSwarmToken {
-  program = [ "./getSwarmToken.sh", linode_instance.spo.ip_address, local.privateKeyFilename ]
-  depends_on = [ linode_instance.spo ]
+data "external" swarmToken {
+  program = [
+    "./getSwarmToken.sh",
+    linode_instance.manager.ip_address,
+    local.privateKeyFilename
+  ]
+
+  depends_on = [ linode_instance.manager ]
 }
 
 # Create a worker instance of the swarm.
-resource "linode_instance" "iad" {
-  label           = "srt-iad"
-  tags            = [ "srt" ]
-  type            = "g7-premium-4"
-  image           = "linode/debian11"
-  region          = "us-iad"
+resource "linode_instance" "workers" {
+  for_each        = { for worker in local.settings.workers : worker.label => worker }
+  label           = each.key
+  tags            = [ each.value.tag ]
+  type            = each.value.type
+  image           = each.value.image
+  region          = each.value.region
   private_ip      = true
-  authorized_keys = [ chomp(tls_private_key.application.public_key_openssh) ]
+  authorized_keys = [ chomp(tls_private_key.default.public_key_openssh) ]
 
   # Remote connection attributes.
   provisioner "remote-exec" {
@@ -61,23 +67,23 @@ resource "linode_instance" "iad" {
       host        = self.ip_address
       user        = "root"
       password    = random_password.default.result
-      private_key = chomp(tls_private_key.application.private_key_openssh)
+      private_key = chomp(tls_private_key.default.private_key_openssh)
     }
 
     # Install the required software and join the instance in the swarm.
     inline = [
-      "hostnamectl set-hostname srt-iad",
+      "hostnamectl set-hostname ${self.label}",
       "apt update",
       "apt -y upgrade",
       "apt -y install bash ca-certificates curl wget htop dnsutils net-tools vim",
       "curl https://get.docker.com | sh -",
       "systemctl enable docker",
       "systemctl start docker",
-      "${data.external.getSwarmToken.result.command}"
+      "docker swarm join --token ${data.external.swarmToken.result.token} ${linode_instance.manager.ip_address}:2377"
     ]
   }
 
-  depends_on = [ data.external.getSwarmToken ]
+  depends_on = [ data.external.swarmToken ]
 }
 
 # Apply the stack in the swarm.
@@ -88,13 +94,37 @@ resource "null_resource" "applyStack" {
 
   provisioner "local-exec" {
     environment = {
-      MANAGER_NODE=linode_instance.spo.ip_address
-      PRIVATE_KEY_FILENAME=local.privateKeyFilename
+      MANAGER_NODE         = linode_instance.manager.ip_address
+      PRIVATE_KEY_FILENAME = local.privateKeyFilename
     }
 
     quiet = true
     command = "./applyStack.sh"
   }
 
-  depends_on = [ linode_instance.iad ]
+  depends_on = [ linode_instance.workers ]
+}
+
+# Remove inactive nodes from the swarm.
+resource "null_resource" "cleanSwarm" {
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "remote-exec" {
+    # Remote connection attributes.
+    connection {
+      host        = linode_instance.manager.ip_address
+      user        = "root"
+      password    = random_password.default.result
+      private_key = chomp(tls_private_key.default.private_key_openssh)
+    }
+
+    inline = [
+      "nodes=$(docker node ls | grep Down | awk {'print $1'})",
+      "if [ -n \"$nodes\" ]; then docker node rm -f $nodes; fi"
+    ]
+  }
+
+  depends_on = [ linode_instance.workers ]
 }
