@@ -7,8 +7,8 @@ Getting Started
 This is a demo project for education/training purposes of streaming.
 
 It automates (using **Terraform**) the provisioning of the following infrastructure for live streaming in Akamai 
-Connected Cloud (former Linode) using the [**SRT**](https://www.haivision.com/products/srt-secure-reliable-transport/) 
-protocol designed by [**Haivision**](https://www.haivision.com/):
+Connected Cloud (former Linode) using the [**SRT**](https://www.haivision.com/products/srt-secure-reliable-transport/) that is  a protocol designed by [**Haivision**](https://www.haivision.com/) for
+low-latency streaming in the Cloud:
 - **Compute Instances**: Where the live streaming server will be running.
 - **Cloud Firewall**:  Protects the streaming traffic.
 
@@ -17,8 +17,8 @@ Please check the files `linode.tf`, `linode-instances.tf`, `linode-firewall.tf`,
 ### Workflow
 
 ---
-The idea is to have multiple locations to receive/transmit a live streaming signal with high availability using the 
-concept of swarm and service mesh.
+The idea is to have multiple locations to receive/transmit live streaming signals using the concept of swarm and 
+service mesh to promote high availability.
 
 ![Workflow diagram](worflow.png)
 
