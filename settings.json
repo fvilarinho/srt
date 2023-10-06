@@ -22,5 +22,5 @@
       "region": "us-mia"
     }
   ],
-  "allowedIps": [ "1.2.3.4/32" ]
+  "allowedIps": []
 }

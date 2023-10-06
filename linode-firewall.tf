@@ -45,17 +45,21 @@ resource "linode_firewall" "srtRules" {
   }
 
   # Enable live video streaming in the swarm.
-  inbound {
-    label    = "srt-live-transmit"
-    action   = "ACCEPT"
-    protocol = "UDP"
-    ports    = "31234"
-    ipv4     = local.settings.allowedIps
+  dynamic "inbound" {
+    for_each = local.settings.allowedIps
+
+    content {
+      label    = "srt-live-transmit"
+      action   = "ACCEPT"
+      protocol = "UDP"
+      ports    = "31234"
+      ipv4     = [ "${inbound.value}/32" ]
+    }
   }
 
-  # Enable live video playing in the swarm.
+  # Enable live video play in the swarm.
   inbound {
-    label    = "srt-live-receive"
+    label    = "srt-live-play"
     action   = "ACCEPT"
     protocol = "UDP"
     ports    = "32000"
