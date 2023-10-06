@@ -24,7 +24,7 @@ function deploy() {
 # Main function.
 function main() {
   checkDependencies
-  build
+  deploy
 }
 
 main
