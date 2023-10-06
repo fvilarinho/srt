@@ -8,8 +8,9 @@ It automates (using **Terraform**) the provisioning of the following infrastruct
 Connected Cloud (former Linode) using the [**SRT**](https://www.haivision.com/products/srt-secure-reliable-transport/) 
 protocol designed by [**Haivision**](https://www.haivision.com/):
 - **Linodes** (Compute instances): Where the live streaming server will be running.
+- **Firewall** (Cloud Firewall):  Protects the streaming traffic.
 
-Please check the files `linode.tf`, `linode-instances.tf`, `linode-ssh-keys.tf` for more details.
+Please check the files `linode.tf`, `linode-instances.tf`, `linode-firewall.tf`, `linode-ssh-keys.tf` for more details.
 
 ### Requirements
 
