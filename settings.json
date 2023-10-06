@@ -21,6 +21,5 @@
       "image": "linode/debian11",
       "region": "us-mia"
     }
-  ],
-  "allowedIps": []
+  ]
 }
