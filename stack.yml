@@ -3,14 +3,11 @@ version: "3"
 services:
   live-transmit1:
     image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/srt:${BUILD_VERSION}
-    deploy:
-      mode: global
-      restart_policy:
-        condition: on-failure
     command:
-      - "/bin/sh"
-      - "-c"
-      - "srt-live-transmit -a:yes srt://:31234 srt://:32000"
+      - "srt-live-transmit"
+      - "-a:yes"
+      - "srt://:31234"
+      - "srt://:32000"
     ports:
       - target: 31234
         published: 31234
@@ -18,3 +15,10 @@ services:
       - target: 32000
         published: 32000
         protocol: udp
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: healthcheck.sh srt-live-transmit 31234 32000
+      interval: 5s

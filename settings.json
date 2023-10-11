@@ -22,6 +22,6 @@
       "region": "us-mia"
     }
   ],
-  "transmitAllowedIps": [],
-  "receiveAllowedIps": []
+  "transmitAllowedIps": [ ],
+  "receiveAllowedIps": [ ]
 }
